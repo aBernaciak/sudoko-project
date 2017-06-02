@@ -1,12 +1,12 @@
 # sudoku-project
 
-> A Vue.js project
+> A Vue.js project - sudoko by Aleksy Bernaciak
 
 ## Build Setup
 
 ``` bash
 # install dependencies
-npm install
+npm install / yarn install
 
 # serve with hot reload at localhost:8080
 npm run dev
