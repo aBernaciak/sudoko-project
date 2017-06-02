@@ -1,6 +1,6 @@
 # sudoku-project
 
-> A Vue.js project - sudoko by Aleksy Bernaciak
+> A Vue.js project - sudoku by Aleksy Bernaciak
 
 ## Build Setup
 

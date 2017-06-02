@@ -5,16 +5,20 @@
       <span>Fields added correctly: {{ blanksCountProgress }}</span>
       <br>
     </div>
-    <div class="box-whole">
+    <div class="box-whole" v-if="dataReady">
       <div class="box-container" v-for="(item, indexX) in playArray">
         <tile v-for="(n, indexY) in 9" class="box"
           :data="item[n-1]" 
           :indexx="indexX" 
-          :indexy="indexY" 
+          :indexy="indexY"
+          :state="tileMessage" 
           @entered="action">
         </tile>
       </div>
       <h2 v-show="message.show">Number( {{this.message.value}} ) You added is {{this.message.isCorrect}}</h2>
+    </div>
+    <div v-else>
+      <h2>Data loading</h2>
     </div>
   </div>
 </template>
@@ -31,53 +35,46 @@ export default {
     return {
       blanksCountStart: 0,
       blanksCountProgress : 0,
+      dataReady: false,
+      tileMessage: '',
       message: {
         value: undefined,
         show: false,
         isCorrect: ''
       },
-      completedArray: [
-        [1, 2, 3, 6, 7, 8, 9, 4, 5],
-        [5, 8, 4, 2, 3, 9, 7, 6, 1],
-        [9, 6, 7, 1, 4, 5, 3, 2, 8],
-        [3, 7, 2, 4, 6, 1, 5, 8, 9],
-        [6, 9, 1, 5, 8, 3, 2, 7, 4],
-        [4, 5, 8, 7, 9, 2, 6, 1, 3],
-        [8, 3, 6, 9, 2, 4, 1, 5, 7],
-        [2, 1, 9, 8, 5, 7, 4, 3, 6],
-        [7, 4, 5, 3, 1, 6, 8, 9, 2],
-      ],
-      playArray: [
-        [0, 2, 0, 6, 0, 8, 0, 0, 0],
-        [5, 8, 0, 0, 0, 9, 7, 0, 0],
-        [0, 0, 0, 0, 4, 0, 0, 0, 0],
-        [3, 7, 0, 0, 0, 0, 5, 0, 0],
-        [6, 0, 0, 0, 0, 0, 0, 0, 4],
-        [0, 0, 8, 0, 0, 0, 0, 1, 3],
-        [0, 0, 0, 0, 2, 0, 0, 0, 0],
-        [0, 0, 9, 8, 0, 0, 0, 3, 6],
-        [0, 0, 0, 3, 0, 6, 0, 9, 0],
-      ],
-      // playArray: [
-      //   [0, 0, 3, 6, 7, 8, 9, 4, 5],
+      solutionsArray: [],
+      playArray: [],
+      // solutionsArray: [
+      //   [1, 2, 3, 6, 7, 8, 9, 4, 5],
       //   [5, 8, 4, 2, 3, 9, 7, 6, 1],
       //   [9, 6, 7, 1, 4, 5, 3, 2, 8],
       //   [3, 7, 2, 4, 6, 1, 5, 8, 9],
-      //   [6, 9, 1, 0, 8, 3, 2, 7, 4],
-      //   [4, 5, 8, 0, 9, 0, 6, 1, 3],
-      //   [8, 3, 6, 0, 2, 0, 1, 5, 7],
+      //   [6, 9, 1, 5, 8, 3, 2, 7, 4],
+      //   [4, 5, 8, 7, 9, 2, 6, 1, 3],
+      //   [8, 3, 6, 9, 2, 4, 1, 5, 7],
       //   [2, 1, 9, 8, 5, 7, 4, 3, 6],
       //   [7, 4, 5, 3, 1, 6, 8, 9, 2],
+      // ],
+      // playArray: [
+      //   [0, 2, 0, 6, 0, 8, 0, 0, 0],
+      //   [5, 8, 0, 0, 0, 9, 7, 0, 0],
+      //   [0, 0, 0, 0, 4, 0, 0, 0, 0],
+      //   [3, 7, 0, 0, 0, 0, 5, 0, 0],
+      //   [6, 0, 0, 0, 0, 0, 0, 0, 4],
+      //   [0, 0, 8, 0, 0, 0, 0, 1, 3],
+      //   [0, 0, 0, 0, 2, 0, 0, 0, 0],
+      //   [0, 0, 9, 8, 0, 0, 0, 3, 6],
+      //   [0, 0, 0, 3, 0, 6, 0, 9, 0],
       // ],
     };
   },
   methods: {
     action(params) {
-      let completedArrayTile = this.completedArray[params.tileIndexX][params.tileIndexY];
-      let playArrayTile = this.completedArray[params.tileIndexX][params.tileIndexY];
-      this.message.show = true;
+      let solutionsArrayTile = this.solutionsArray[params.tileIndexX][params.tileIndexY];
+      let playArrayTile = this.solutionsArray[params.tileIndexX][params.tileIndexY];
       this.message.value = params.tileValue;
-      if(params.tileValue == completedArrayTile) {
+      this.message.show = true;
+      if(params.tileValue == solutionsArrayTile) {
         this.$set(this.playArray[params.tileIndexX], params.tileIndexY, params.tileValue);
         this.message.isCorrect = 'correct';
         if( this.blanksCountStart == ++this.blanksCountProgress){
@@ -85,9 +82,10 @@ export default {
         }
       }
       else {
-        this.$set(this.playArray[params.tileIndexX], params.tileIndexY, 0);
+        this.$set(this.playArray[params.tileIndexX], params.tileIndexY, null);
         this.message.isCorrect = 'wrong';
-        this.message.show = true;
+        // this.tileMessage = 'error';
+        // this.message.show = false;
         // for (let i = 0; i <= 8; i++) {
         //   for (let j = 0; j <= 8; j++) {
         //     if(this.playArray[i][j] == 0) {
@@ -96,16 +94,27 @@ export default {
         //   }
         // }
       }
+    },
+    checkBlanks() {
+      if(this.dataReady) {
+        for (let i = 0; i <= 8; i++) {
+          for (let j = 0; j <= 8; j++) {
+            if(this.playArray[i][j] == null) {
+              this.blanksCountStart ++;
+            }
+          }
+        };
+      }
     }
   },
   created() {
-    for (let i = 0; i <= 8; i++) {
-      for (let j = 0; j <= 8; j++) {
-        if(this.playArray[i][j] == 0) {
-          this.blanksCountStart ++;
-        }
-      }
-    }
+    this.$http.get('http://vast-wildwood-2439.herokuapp.com/api/easy')
+      .then(function(response){
+        this.playArray = response.data.board;
+        this.solutionsArray = response.data.solution;
+        this.dataReady = true;
+        this.checkBlanks();
+    });
   }
 }
 </script>
@@ -124,11 +133,11 @@ export default {
   list-style-type: none;
   padding: 0;
   &:nth-of-type(3n+1) {
-    border-top: 3px solid red;
+    border-top: 3px solid #064475;
     display: inline-block;
   }
   &:last-of-type {
-    border-bottom: 3px solid red;
+    border-bottom: 3px solid #064475;
     display: inline-block;
   }
   .box {
@@ -140,16 +149,18 @@ export default {
     font-size: 32px;
     display: inline-block;
     &:first-of-type {
-      border-left: 3px solid red;
+      border-left: 3px solid #064475;
     }
     &:last-of-type {
-      border-right: 3px solid red;
+      border-right: 3px solid #064475;
     }
     &:nth-of-type(3n) {
-      border-right: 3px solid red;
+      border-right: 3px solid #064475;
     }
     span {
-      opacity: 0.8;
+      background: #2f97ea;
+      display: block;
+      color: white;
     }
   }
   input[type="number"] {

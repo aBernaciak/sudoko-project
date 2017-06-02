@@ -1,9 +1,9 @@
 <template>
-  <div id="tile">
+  <div id="tile" :class="{error: isError, correct: isCorrect}">
     <input type="number"
       v-on:keyup.enter="showConfirm($event)"
       v-on:blur="showConfirm($event)"
-      v-if="this.data == 0">
+      v-if="this.data == null">
     <span v-else-if="this.data > 0">
       {{ this.data }}
     </span>
@@ -16,7 +16,7 @@
 <script>
 export default {
   name: 'tile',
-  props: ['data', 'indexy', 'indexx'],
+  props: ['data', 'indexy', 'indexx', 'state'],
   data() {
     return {
       computedIndexY: this.indexy,
