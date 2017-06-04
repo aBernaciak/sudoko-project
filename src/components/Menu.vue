@@ -1,9 +1,8 @@
 <template>
   <div id="game-menu">
     <ul>
-      <li>
-        <router-link to="/game">Start Game</router-link>
-      </li>
+      <li><router-link to="/game/easy">Start Game - easy</router-link></li>
+      <li><router-link to="/game/hard">Start Game - hard</router-link></li>
     </ul>
   </div>
 </template>

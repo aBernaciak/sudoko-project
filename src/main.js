@@ -11,7 +11,7 @@ Vue.use(VueRouter);
 const routes = [
 	{ path: '/', component: GameMenu },
 	{ path: '', component: GameMenu },
-	{ path: '/game', component: Board }
+	{ path: '/game/:difficulty', component: Board }
 ]
 
 const router = new VueRouter({

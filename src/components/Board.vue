@@ -1,5 +1,6 @@
 <template>
   <div id="board">
+    <router-link to="/">Back to menu</router-link>
     <div class="scores-container">
       <span>Amount of fields to fill: {{ blanksCountStart }}</span>&nbsp;&nbsp;
       <span>Fields filled <strong>correctly</strong>: {{ filledCorrect }}</span>&nbsp;&nbsp;
@@ -119,7 +120,8 @@ export default {
     }
   },
   created() {
-    this.$http.get('http://vast-wildwood-2439.herokuapp.com/api/easy')
+    let difficulty = this.$route.params.difficulty;
+    this.$http.get('http://vast-wildwood-2439.herokuapp.com/api/' + difficulty)
       .then(function(response){
         this.playArray = response.data.board;
         this.solutionsArray = response.data.solution;
