@@ -1,9 +1,23 @@
 <template>
   <div id="tile">
-    <input type="number"
-      v-if="this.data == null"
-      v-on:keyup.enter="showConfirm($event)"
-      v-on:blur="showConfirm($event)">
+    <div v-if="this.data == null" class="input-container">
+      <input type="number"
+        v-on:keyup.enter="sendValue($event)"
+        v-on:blur="sendValue($event)"
+        @click="showConfirm()">
+        <ul v-show="showMenu" class="circle-menu">
+          <li>1</li>
+          <li>2</li>
+          <li>3</li>
+          <li>4</li>
+          <li>5</li>
+          <li>6</li>
+          <li>7</li>
+          <li>8</li>
+          <li>9</li>
+          <li>X</li>
+        </ul>
+    </div>
     <span v-else-if="data > 0">
       {{ data }}
     </span>
@@ -22,17 +36,21 @@ export default {
   props: ['data', 'indexy', 'indexx', 'state'],
   data() {
     return {
+      showMenu: false,
       computedIndexY: this.indexy,
       computedIndexX: this.indexx
     }
   },
   methods: {
-    showConfirm(event) {
+    sendValue(event) {
       if(event.target.value != '') {
         this.$emit('entered', { tileValue: event.target.value,
                                 tileIndexX: this.computedIndexX, 
                                 tileIndexY: this.computedIndexY })
       }
+    },
+    showConfirm() {
+      this.showMenu = true;
     }
   },
 };
@@ -45,5 +63,40 @@ export default {
   }
   .added-by-user {
     opacity: 0.8;
+  }
+  .input-container {
+    position: relative;
+    .circle-menu {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      top: 0;
+      left: 0;
+      li {
+        border-radius: 50%;
+        text-align: center;
+        width: 60px;
+        height: 60px;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        -webkit-transition: .2s linear;
+        transition: .2s linear;
+        border: none;
+        z-index: 15;
+        &:first-child {
+          transform: translateY(-55px)
+        }
+        &:nth-child(2) {
+          transform: translateY(-40px) translateX(35px);
+        }
+        &:nth-child(3) {
+          transform: translateY(-15px) translateX(60px);
+        }
+        &:nth-child(4) {
+          transform: translateY(15px) translateX(35px);
+        }
+      }
+    }
   }
 </style>
