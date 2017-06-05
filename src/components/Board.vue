@@ -1,6 +1,8 @@
 <template>
   <div id="board">
-    <router-link to="/">Back to menu</router-link>
+    <button class="main-button">
+      <router-link to="/">Back to menu</router-link>
+    </button>
     <div class="scores-container">
       <span>Amount of fields to fill: {{ blanksCountStart }}</span>&nbsp;&nbsp;
       <span>Fields filled <strong>correctly</strong>: {{ filledCorrect }}</span>&nbsp;&nbsp;
@@ -83,7 +85,7 @@ export default {
       this.message.value = params.tileValue;
       this.message.show = true;
       if(params.tileValue == solutionsArrayTile) {
-        this.$set(this.playArray[params.tileIndexX], params.tileIndexY, params.tileValue + ' *');
+        this.$set(this.playArray[params.tileIndexX], params.tileIndexY, params.tileValue + '*');
         console.log(this.playArray[params.tileIndexX][params.tileIndexY]);
         this.message.isCorrect = 'correct';
         if(this.blanksCountStart == ++this.filledCorrect){
@@ -133,24 +135,18 @@ export default {
 </script>
 
 <style lang="scss">
-#board {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+$border-color: #064475;
+$background-color-tile: #2f97ea;
 
 .box-container {
   list-style-type: none;
   padding: 0;
   &:nth-of-type(3n+1) {
-    border-top: 3px solid #064475;
+    border-top: 3px solid $border-color;
     display: inline-block;
   }
   &:last-of-type {
-    border-bottom: 3px solid #064475;
+    border-bottom: 3px solid $border-color;
     display: inline-block;
   }
   .box {
@@ -162,16 +158,16 @@ export default {
     font-size: 32px;
     display: inline-block;
     &:first-of-type {
-      border-left: 3px solid #064475;
+      border-left: 3px solid $border-color;
     }
     &:last-of-type {
-      border-right: 3px solid #064475;
+      border-right: 3px solid $border-color;
     }
     &:nth-of-type(3n) {
-      border-right: 3px solid #064475;
+      border-right: 3px solid $border-color;
     }
     span {
-      background: #2f97ea;
+      background: $background-color-tile;
       display: block;
       color: white;
     }
@@ -193,8 +189,4 @@ export default {
     margin: 0;
   }
  }
-
-a {
-  color: #42b983;
-}
 </style>
