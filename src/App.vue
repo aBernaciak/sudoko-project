@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="container">
     <img src="./assets/sudoku-logo.png">
     <div class="router-view">
       <router-view></router-view>
@@ -35,8 +35,9 @@ export default {
   }
   a {
     text-decoration: none;
-    &:active, &:focus, &:visited {
+    &:active, &:focus, &:visited, &:hover {
       color: inherit;
+      text-decoration: none;
     }
   } 
   img {

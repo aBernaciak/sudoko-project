@@ -21,9 +21,9 @@
           @entered="action">
         </tile>
       </div>
-      <h2 v-show="message.show">
+      <h3 v-show="message.show">
         Number( {{ message.value}} ) You added is {{ message.isCorrect}}.
-      </h2>
+      </h3>
       <h4>* Field added by user.</h4>
     </div>
     <div v-else>

@@ -5,6 +5,9 @@
         <router-link to="/game/easy">Start Game - easy</router-link>
       </li>
       <li class="main-button">
+        <router-link to="/game/medium">Start Game - medium</router-link>
+      </li>
+      <li class="main-button">
         <router-link to="/game/hard">Start Game - hard</router-link>
       </li>
     </ul>
