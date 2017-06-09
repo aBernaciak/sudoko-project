@@ -5,7 +5,7 @@
         v-on:keyup.enter="sendValue($event)"
         v-on:blur="sendValue($event)"
         @click="showConfirm()">
-        <ul v-show="showMenu" class="circle-menu">
+<!--         <ul v-show="showMenu" class="circle-menu">
           <li>1</li>
           <li>2</li>
           <li>3</li>
@@ -16,7 +16,7 @@
           <li>8</li>
           <li>9</li>
           <li>X</li>
-        </ul>
+        </ul> -->
     </div>
     <span v-else-if="data > 0">
       {{ data }}

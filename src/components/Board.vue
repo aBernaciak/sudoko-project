@@ -4,9 +4,7 @@
       <router-link to="/">Back to menu</router-link>
     </button>
     <div class="scores-container">
-      <span>Amount of fields to fill: {{ blanksCountStart }}</span>&nbsp;&nbsp;
-      <span>Fields filled <strong>correctly</strong>: {{ filledCorrect }}</span>&nbsp;&nbsp;
-      <span>Field filled <strong>wrong</strong>: {{ filledWrong }}</span>
+      <span>Amount of fields to fill: {{ blanksCount }}</span>
       <br>
     </div>
     <div class="box-whole" v-if="dataReady">
@@ -18,13 +16,14 @@
           :indexx="indexX" 
           :indexy="indexY"
           :state="tileMessage" 
+          @click="editTile"
           @entered="action">
         </tile>
       </div>
-      <h3 v-show="message.show">
-        Number( {{ message.value}} ) You added is {{ message.isCorrect}}.
+      <h3 v-show="messageShow">
+        Correct: {{ filledCorrect }}
+        Errors: {{ filledWrong }}
       </h3>
-      <h4>* Field added by user.</h4>
     </div>
     <div v-else>
       <h2>Data loading...</h2>
@@ -42,71 +41,37 @@ export default {
   },
   data() {
     return {
-      blanksCountStart: 0,
-      filledCorrect : 0,
+      blanksCount: 0,
+      filledCorrect: 0,
       filledWrong: 0,
       dataReady: false,
       tileMessage: '',
-      message: {
-        value: undefined,
-        show: false,
-        isCorrect: ''
-      },
+      messageShow: false,
       solutionsArray: [],
       playArray: [],
-      // solutionsArray: [
-      //   [1, 2, 3, 6, 7, 8, 9, 4, 5],
-      //   [5, 8, 4, 2, 3, 9, 7, 6, 1],
-      //   [9, 6, 7, 1, 4, 5, 3, 2, 8],
-      //   [3, 7, 2, 4, 6, 1, 5, 8, 9],
-      //   [6, 9, 1, 5, 8, 3, 2, 7, 4],
-      //   [4, 5, 8, 7, 9, 2, 6, 1, 3],
-      //   [8, 3, 6, 9, 2, 4, 1, 5, 7],
-      //   [2, 1, 9, 8, 5, 7, 4, 3, 6],
-      //   [7, 4, 5, 3, 1, 6, 8, 9, 2],
-      // ],
-      // playArray: [
-      //   [0, 2, 0, 6, 0, 8, 0, 0, 0],
-      //   [5, 8, 0, 0, 0, 9, 7, 0, 0],
-      //   [0, 0, 0, 0, 4, 0, 0, 0, 0],
-      //   [3, 7, 0, 0, 0, 0, 5, 0, 0],
-      //   [6, 0, 0, 0, 0, 0, 0, 0, 4],
-      //   [0, 0, 8, 0, 0, 0, 0, 1, 3],
-      //   [0, 0, 0, 0, 2, 0, 0, 0, 0],
-      //   [0, 0, 9, 8, 0, 0, 0, 3, 6],
-      //   [0, 0, 0, 3, 0, 6, 0, 9, 0],
-      // ],
     };
+  },
+  computed: {
+    totalToFill() {
+      return this.filledWrong + this.filledCorrect;
+    }
   },
   methods: {
     action(params) {
       let solutionsArrayTile = this.solutionsArray[params.tileIndexX][params.tileIndexY];
       let playArrayTile = this.solutionsArray[params.tileIndexX][params.tileIndexY];
-      this.message.value = params.tileValue;
-      this.message.show = true;
+      this.$set(this.playArray[params.tileIndexX], params.tileIndexY, params.tileValue + '\'');
       if(params.tileValue == solutionsArrayTile) {
-        this.$set(this.playArray[params.tileIndexX], params.tileIndexY, params.tileValue + '*');
-        console.log(this.playArray[params.tileIndexX][params.tileIndexY]);
-        this.message.isCorrect = 'correct';
-        if(this.blanksCountStart == ++this.filledCorrect){
-          alert('Wygrana')
+        this.filledCorrect ++;
+        if(this.blanksCount == this.totalToFill){
+          this.messageShow = true;
         }
       }
       else {
-        this.$set(this.playArray[params.tileIndexX], params.tileIndexY, null);
         this.filledWrong ++;
-        this.message.isCorrect = 'wrong';
-        this.tileMessage = 'error';
-
-        /* funny one chance game mode */
-        // this.message.show = false;
-        // for (let i = 0; i <= 8; i++) {
-        //   for (let j = 0; j <= 8; j++) {
-        //     if(this.playArray[i][j] == null) {
-        //       this.$set(this.playArray[i], j, -1);
-        //     }
-        //   }
-        // }
+        if(this.blanksCount == this.totalToFill){
+          this.messageShow = true;
+        }
       }
     },
     checkBlanks() {
@@ -114,11 +79,14 @@ export default {
         for (let i = 0; i <= 8; i++) {
           for (let j = 0; j <= 8; j++) {
             if(this.playArray[i][j] == null) {
-              this.blanksCountStart ++;
+              this.blanksCount ++;
             }
           }
         };
       }
+    },
+    test() {
+      this.messageShow = true;
     }
   },
   created() {
