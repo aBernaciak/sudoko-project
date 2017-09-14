@@ -5,6 +5,7 @@
       <transition name="fade" mode="out-in">
         <router-view></router-view>
       </transition>
+      <vue-progress-bar></vue-progress-bar>
     </div>
   </div>
 </template>

@@ -19,13 +19,15 @@
           @entered="action">
         </tile>
       </div>
+      <br>
+      <button @click="resetArray()">Reset</button>
       <h3 v-if="messageShow">
         Correct: {{ filledCorrect }}
         Errors: {{ filledWrong }}
       </h3>
     </div>
     <div v-else>
-      <h2>Data loading...</h2>
+      <h3>{{ message }}</h3>
     </div>
   </div>
 </template>
@@ -40,6 +42,7 @@ export default {
   },
   data() {
     return {
+      message: '',
       blanksCount: 0,
       filledCorrect: 0,
       filledWrong: 0,
@@ -47,6 +50,7 @@ export default {
       tileMessage: '',
       messageShow: false,
       solutionsArray: [],
+      initialArray: [],
       playArray: [],
       editableFieldsArray: []
     };
@@ -85,9 +89,14 @@ export default {
           }
         }
       }
+    },
+    resetArray() {
+      console.log(this.playArray, this.initialArray);
+      // this.playArray = this.initialArray;
     }
   },
   created() {
+    this.$Progress.start();
     let difficulty = this.$route.params.difficulty;
     // console.log(this.$ls.get('playArray'));
     // if (this.$ls.get('playArray') != 'undefined') {
@@ -99,13 +108,18 @@ export default {
     // else {
       this.$http.get('http://vast-wildwood-2439.herokuapp.com/api/' + difficulty)
         .then(function(response){
+          this.initialArray = response.data.board;
           this.playArray = response.data.board;
           // this.$ls.set('playArray', response.data.board);
           this.solutionsArray = response.data.solution;
           // this.$ls.set('solutionsArray', response.data.solution);
           this.dataReady = true;
           this.checkBlanks();
-      });
+          this.$Progress.finish()
+      }, (response) => {
+        this.message = 'Error loading game board.'
+        this.$Progress.fail()
+      })
     // }
   }
 }
@@ -125,6 +139,7 @@ $background-color-tile: #2f97ea;
   &:last-of-type {
     border-bottom: 3px solid $border-color;
     display: inline-block;
+    margin-bottom: 30px;
   }
   .box {
     width: 60px;
