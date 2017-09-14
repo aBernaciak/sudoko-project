@@ -15,12 +15,11 @@
           :data="item[n-1]" 
           :indexx="indexX" 
           :indexy="indexY"
-          :state="tileMessage" 
-          @click="editTile"
+          :state="tileMessage"
           @entered="action">
         </tile>
       </div>
-      <h3 v-show="messageShow">
+      <h3 v-if="messageShow">
         Correct: {{ filledCorrect }}
         Errors: {{ filledWrong }}
       </h3>
@@ -49,6 +48,7 @@ export default {
       messageShow: false,
       solutionsArray: [],
       playArray: [],
+      editableFieldsArray: []
     };
   },
   computed: {
@@ -60,7 +60,7 @@ export default {
     action(params) {
       let solutionsArrayTile = this.solutionsArray[params.tileIndexX][params.tileIndexY];
       let playArrayTile = this.solutionsArray[params.tileIndexX][params.tileIndexY];
-      this.$set(this.playArray[params.tileIndexX], params.tileIndexY, params.tileValue + '\'');
+      this.$set(this.playArray[params.tileIndexX], params.tileIndexY, params.tileValue);
       if(params.tileValue == solutionsArrayTile) {
         this.filledCorrect ++;
         if(this.blanksCount == this.totalToFill){
@@ -80,24 +80,33 @@ export default {
           for (let j = 0; j <= 8; j++) {
             if(this.playArray[i][j] == null) {
               this.blanksCount ++;
+              this.editableFieldsArray.push([i,j]);
             }
           }
-        };
+        }
       }
-    },
-    test() {
-      this.messageShow = true;
     }
   },
   created() {
     let difficulty = this.$route.params.difficulty;
-    this.$http.get('http://vast-wildwood-2439.herokuapp.com/api/' + difficulty)
-      .then(function(response){
-        this.playArray = response.data.board;
-        this.solutionsArray = response.data.solution;
-        this.dataReady = true;
-        this.checkBlanks();
-    });
+    // console.log(this.$ls.get('playArray'));
+    // if (this.$ls.get('playArray') != 'undefined') {
+    //   this.playArray = this.$ls.get('playArray');
+    //   this.solutionsArray = this.$ls.get('solutionsArray');
+    //   console.log(this.playArray, this.solutionsArray)
+    //   this.dataReady = true;
+    // }
+    // else {
+      this.$http.get('http://vast-wildwood-2439.herokuapp.com/api/' + difficulty)
+        .then(function(response){
+          this.playArray = response.data.board;
+          // this.$ls.set('playArray', response.data.board);
+          this.solutionsArray = response.data.solution;
+          // this.$ls.set('solutionsArray', response.data.solution);
+          this.dataReady = true;
+          this.checkBlanks();
+      });
+    // }
   }
 }
 </script>

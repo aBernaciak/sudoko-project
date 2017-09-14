@@ -1,10 +1,11 @@
 <template>
   <div id="tile">
-    <div v-if="this.data == null" class="input-container">
+    <div v-if="this.data == null || this.editableTile == true" class="input-container">
       <input type="number"
         v-on:keyup.enter="sendValue($event)"
         v-on:blur="sendValue($event)"
-        @click="showConfirm()">
+        @click="showConfirm()"
+        :placeholder="data">
 <!--         <ul v-show="showMenu" class="circle-menu">
           <li>1</li>
           <li>2</li>
@@ -18,10 +19,11 @@
           <li>X</li>
         </ul> -->
     </div>
-    <span v-else-if="data > 0">
+    <span class="added-by-user" v-else-if="data > 0 && addByUser == true"
+                                @click="editTile()">
       {{ data }}
     </span>
-    <span v-else class="added-by-user">
+    <span v-else>
       {{ data }}
     </span>
 <!--     <span v-else class="bomb-container">
@@ -33,16 +35,20 @@
 <script>
 export default {
   name: 'tile',
-  props: ['data', 'indexy', 'indexx', 'state'],
+  props: ['data', 'indexy', 'indexx'],
   data() {
     return {
       showMenu: false,
       computedIndexY: this.indexy,
-      computedIndexX: this.indexx
+      computedIndexX: this.indexx,
+      addByUser: false,
+      editableTile: false
     }
   },
   methods: {
     sendValue(event) {
+      this.addByUser = true;
+      this.editableTile = false;
       if(event.target.value != '') {
         this.$emit('entered', { tileValue: event.target.value,
                                 tileIndexX: this.computedIndexX, 
@@ -51,6 +57,9 @@ export default {
     },
     showConfirm() {
       this.showMenu = true;
+    },
+    editTile() {
+      this.editableTile = true;
     }
   },
 };
@@ -62,7 +71,8 @@ export default {
     background: red;
   }
   .added-by-user {
-    opacity: 0.8;
+    opacity: 0.4;
+    cursor: pointer;
   }
   .input-container {
     position: relative;

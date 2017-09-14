@@ -2,7 +2,9 @@
   <div id="app" class="container">
     <img src="./assets/sudoku-logo.png">
     <div class="router-view">
-      <router-view></router-view>
+      <transition name="fade" mode="out-in">
+        <router-view></router-view>
+      </transition>
     </div>
   </div>
 </template>
@@ -63,5 +65,11 @@ export default {
   }
   .router-view {
     margin-top: 30px;
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .3s
+  }
+  .fade-enter, .fade-leave-active {
+    opacity: 0
   }
 </style>
