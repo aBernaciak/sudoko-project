@@ -1,6 +1,6 @@
 <template>
   <div id="tile">
-    <div v-if="this.data == null || this.editableTile == true" class="input-container">
+    <div v-if="data == null || editableTile == true" class="input-container">
       <input type="number"
         v-on:keyup.enter="sendValue($event)"
         v-on:blur="sendValue($event)"
@@ -19,7 +19,7 @@
           <li>X</li>
         </ul> -->
     </div>
-    <span class="added-by-user" v-else-if="data > 0 && addByUser == true"
+    <span class="added-by-user" v-else-if="addByUser == true"
                                 @click="editTile()">
       {{ data }}
     </span>
@@ -48,12 +48,16 @@ export default {
   methods: {
     sendValue(event) {
       this.addByUser = true;
-      this.editableTile = false;
-      if(event.target.value != '') {
+      if(event.target.value != '' && typeof(event.target.value) != 'number' && event.target.value > 0 && event.target.value <= 9 ) {
         this.$emit('entered', { tileValue: event.target.value,
                                 tileIndexX: this.computedIndexX, 
-                                tileIndexY: this.computedIndexY })
+                                tileIndexY: this.computedIndexY, 
+                                tileEdited: this.editableTile })
       }
+      else {
+        this.$emit('entered', { tileMessage: 'Has to be number between 1-9.' })
+      }
+      this.editableTile = false;
     },
     showConfirm() {
       this.showMenu = true;

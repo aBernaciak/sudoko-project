@@ -26,8 +26,8 @@
         Errors: {{ filledWrong }}
       </h3>
     </div>
-    <div v-else>
-      <h3>{{ message }}</h3>
+    <div v-if="dataReady == true && message != ''">
+      <h3>{{ mainMessage }}</h3>
     </div>
   </div>
 </template>
@@ -58,24 +58,39 @@ export default {
   computed: {
     totalToFill() {
       return this.filledWrong + this.filledCorrect;
+    },
+    mainMessage() {
+      // if(this.message == 'Cant be blank or not a number.') {
+      //   return this.message;
+      //   setTimeout(function() {this.message = ''}, 3000);
+      // }
+      // else {
+      //   return this.message;
+      // }
+      return this.message;
     }
   },
   methods: {
     action(params) {
-      let solutionsArrayTile = this.solutionsArray[params.tileIndexX][params.tileIndexY];
-      let playArrayTile = this.solutionsArray[params.tileIndexX][params.tileIndexY];
-      this.$set(this.playArray[params.tileIndexX], params.tileIndexY, params.tileValue);
-      if(params.tileValue == solutionsArrayTile) {
-        this.filledCorrect ++;
-        if(this.blanksCount == this.totalToFill){
-          this.messageShow = true;
+      if(typeof(params.tileValue) !== 'undefined') {
+        let solutionsArrayTile = this.solutionsArray[params.tileIndexX][params.tileIndexY];
+        let playArrayTile = this.solutionsArray[params.tileIndexX][params.tileIndexY];
+        this.$set(this.playArray[params.tileIndexX], params.tileIndexY, params.tileValue);
+        if(params.tileValue == solutionsArrayTile) {
+          this.filledCorrect ++;
+          if(this.blanksCount == this.totalToFill){
+            this.messageShow = true;
+          }
+        }
+        else {
+          this.filledWrong ++;
+          if(this.blanksCount == this.totalToFill){
+            this.messageShow = true;
+          }
         }
       }
       else {
-        this.filledWrong ++;
-        if(this.blanksCount == this.totalToFill){
-          this.messageShow = true;
-        }
+        this.message = params.tileMessage;
       }
     },
     checkBlanks() {
