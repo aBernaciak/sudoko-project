@@ -51,8 +51,7 @@ export default {
       messageShow: false,
       solutionsArray: [],
       initialArray: [],
-      playArray: [],
-      editableFieldsArray: []
+      playArray: []
     };
   },
   computed: {
@@ -60,34 +59,28 @@ export default {
       return this.filledWrong + this.filledCorrect;
     },
     mainMessage() {
-      // if(this.message == 'Cant be blank or not a number.') {
-      //   return this.message;
-      //   setTimeout(function() {this.message = ''}, 3000);
-      // }
-      // else {
-      //   return this.message;
-      // }
       return this.message;
     }
   },
   methods: {
     action(params) {
       if(typeof(params.tileValue) !== 'undefined') {
-        let solutionsArrayTile = this.solutionsArray[params.tileIndexX][params.tileIndexY];
-        let playArrayTile = this.solutionsArray[params.tileIndexX][params.tileIndexY];
+        this.message = '';
         this.$set(this.playArray[params.tileIndexX], params.tileIndexY, params.tileValue);
-        if(params.tileValue == solutionsArrayTile) {
-          this.filledCorrect ++;
-          if(this.blanksCount == this.totalToFill){
-            this.messageShow = true;
-          }
-        }
-        else {
-          this.filledWrong ++;
-          if(this.blanksCount == this.totalToFill){
-            this.messageShow = true;
-          }
-        }
+        // let solutionsArrayTile = this.solutionsArray[params.tileIndexX][params.tileIndexY];
+        // let playArrayTile = this.solutionsArray[params.tileIndexX][params.tileIndexY];
+        // if(params.tileValue == solutionsArrayTile) {
+        //   this.filledCorrect ++;
+        //   if(this.blanksCount == this.totalToFill){
+        //     this.messageShow = true;
+        //   }
+        // }
+        // else {
+        //   this.filledWrong ++;
+        //   if(this.blanksCount == this.totalToFill){
+        //     this.messageShow = true;
+        //   }
+        // }
       }
       else {
         this.message = params.tileMessage;
@@ -99,7 +92,6 @@ export default {
           for (let j = 0; j <= 8; j++) {
             if(this.playArray[i][j] == null) {
               this.blanksCount ++;
-              this.editableFieldsArray.push([i,j]);
             }
           }
         }
@@ -107,35 +99,24 @@ export default {
     },
     resetArray() {
       console.log(this.playArray, this.initialArray);
-      // this.playArray = this.initialArray;
+      this.playArray = this.initialArray;
     }
   },
   created() {
     this.$Progress.start();
     let difficulty = this.$route.params.difficulty;
-    // console.log(this.$ls.get('playArray'));
-    // if (this.$ls.get('playArray') != 'undefined') {
-    //   this.playArray = this.$ls.get('playArray');
-    //   this.solutionsArray = this.$ls.get('solutionsArray');
-    //   console.log(this.playArray, this.solutionsArray)
-    //   this.dataReady = true;
-    // }
-    // else {
-      this.$http.get('http://vast-wildwood-2439.herokuapp.com/api/' + difficulty)
-        .then(function(response){
-          this.initialArray = response.data.board;
-          this.playArray = response.data.board;
-          // this.$ls.set('playArray', response.data.board);
-          this.solutionsArray = response.data.solution;
-          // this.$ls.set('solutionsArray', response.data.solution);
-          this.dataReady = true;
-          this.checkBlanks();
-          this.$Progress.finish()
-      }, (response) => {
-        this.message = 'Error loading game board.'
-        this.$Progress.fail()
-      })
-    // }
+    this.$http.get('http://vast-wildwood-2439.herokuapp.com/api/' + difficulty)
+      .then(function(response){
+        this.initialArray = response.data.board;
+        this.playArray = response.data.board;
+        this.solutionsArray = response.data.solution;
+        this.dataReady = true;
+        this.checkBlanks();
+        this.$Progress.finish()
+    }, (response) => {
+      this.message = 'Error loading game board.'
+      this.$Progress.fail()
+    })
   }
 }
 </script>

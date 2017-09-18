@@ -48,7 +48,12 @@ export default {
   methods: {
     sendValue(event) {
       this.addByUser = true;
-      if(event.target.value != '' && typeof(event.target.value) != 'number' && event.target.value > 0 && event.target.value <= 9 ) {
+      if(
+          event.target.value != '' 
+          && typeof(event.target.value) != 'number' 
+          && event.target.value > 0 
+          && event.target.value <= 9 
+        ) {
         this.$emit('entered', { tileValue: event.target.value,
                                 tileIndexX: this.computedIndexX, 
                                 tileIndexY: this.computedIndexY, 
